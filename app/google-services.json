@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "922922304192",
+    "project_id": "crpm-ba256",
+    "storage_bucket": "crpm-ba256.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:922922304192:android:67e88bddbaa3b3edff2325",
+        "android_client_info": {
+          "package_name": "cl.inacap.appcrpm"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJt0tsGPNUx7wMtEj9SlbqodNwaL74P_g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:gravity="center"
+    android:background="#000000">
+
+    <ImageView
+        android:id="@+id/hand_control_image"
+        android:layout_width="411dp"
+        android:layout_height="278dp"
+        android:layout_marginBottom="30dp"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/logo" />
+
+    <TextView
+        android:id="@+id/tv_main_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Registro de cuenta"
+        android:textSize="24sp"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="10dp" />
+
+    <TextView
+        android:id="@+id/tv_subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Registra tu cuenta con correo y contraseña"
+        android:textSize="14sp"
+        android:textColor="#FFFFFF"
+        android:gravity="center"
+        android:layout_marginBottom="30dp" />
+
+    <EditText
+        android:id="@+id/registro_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Correo electrónico"
+        android:padding="15dp"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#A9A9A9"
+        android:layout_marginBottom="15dp"
+        android:inputType="textEmailAddress"/>
+
+    <EditText
+        android:id="@+id/registro_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Contraseña"
+        android:padding="15dp"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#A9A9A9"
+        android:layout_marginBottom="30dp"
+        android:inputType="textPassword"/>
+
+    <Button
+        android:id="@+id/btn_registroCuenta"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Registrar"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/rectangle_shape_bg"
+        android:padding="15dp"
+        android:textStyle="bold"/>
+
+</LinearLayout>

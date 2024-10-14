@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/text_configuration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="20dp"
+            android:text="Configuración"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ajustes de la Cámara"
+            android:textSize="18sp"
+            android:textColor="#FFFFFF"
+            android:paddingBottom="10dp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Invertir Imagen"
+                android:textSize="16sp"
+                android:textColor="#FFFFFF" />
+            <ImageView
+                android:id="@+id/switchspace3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Switch
+                android:id="@+id/switch1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:thumbTint="@color/white"
+                android:trackTint="@color/grey"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Espejo de Imagen"
+                android:textSize="16sp"
+                android:textColor="#FFFFFF" />
+            <ImageView
+                android:id="@+id/switchspace2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Switch
+                android:id="@+id/switch2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:thumbTint="@color/white"
+                android:trackTint="@color/grey"/>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ajustes de Sensibilidad"
+            android:textSize="18sp"
+            android:textColor="#FFFFFF"
+            android:paddingTop="20dp"
+            android:paddingBottom="10dp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Calibrar Dispositivo"
+                android:textSize="16sp"
+                android:textColor="#FFFFFF" />
+
+            <ImageButton
+                android:id="@+id/botonCalibracion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:rotation="180"
+                app:srcCompat="@drawable/arrow_back"
+                android:background="@color/black"
+                android:contentDescription="arrow_back" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="347dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="20dp"
+            android:paddingBottom="10dp"
+            android:text="Opciones Avanzadas"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mostrar Depuración"
+                android:textSize="16sp"
+                android:textColor="#FFFFFF" />
+            <ImageView
+                android:id="@+id/switchspace1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Switch
+                android:id="@+id/switch3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:thumbTint="@color/white"
+                android:trackTint="@color/grey"/>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_reset"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Restablecer valores"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/rectangle_shape_bg"
+            android:padding="15dp"
+            android:textStyle="bold"
+            android:layout_marginTop="20dp"/>
+    </LinearLayout>
+</LinearLayout>
