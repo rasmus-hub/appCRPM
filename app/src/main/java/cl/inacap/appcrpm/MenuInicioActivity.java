@@ -15,12 +15,16 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class MenuInicioActivity extends AppCompatActivity {
 
+    private FirebaseAuth mAuth;
+
     private CardView buttonConexion, buttonCaptura, buttonAjustes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_inicio);
+
+        mAuth = FirebaseAuth.getInstance();
 
         buttonCaptura = findViewById(R.id.botonCaptura);
 
@@ -48,5 +52,15 @@ public class MenuInicioActivity extends AppCompatActivity {
                 startActivity(new Intent(MenuInicioActivity.this, AjustesActivity.class));
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser == null) {
+            Toast.makeText(this, "Usuario no autorizado, complete el formulario", Toast.LENGTH_SHORT).show();
+            finish();
+        }
     }
 }

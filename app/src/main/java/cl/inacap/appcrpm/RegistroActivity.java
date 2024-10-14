@@ -12,14 +12,23 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class RegistroActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
+
+    private FirebaseFirestore db;
 
     private Button buttonRegistroCuenta;
 
@@ -33,6 +42,7 @@ public class RegistroActivity extends AppCompatActivity {
         setContentView(R.layout.activity_registro);
 
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
         editTextRegistroEmail = findViewById(R.id.registro_email);
         editTextRegistroPassword = findViewById(R.id.registro_password);
         buttonRegistroCuenta = findViewById(R.id.btn_registroCuenta);
@@ -66,7 +76,28 @@ public class RegistroActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Si el registro es correcto, se muestra la UI con la información del usuario
                             Log.d("CREACION CORREO", "createUserWithEmail:success");
-                            Toast.makeText(RegistroActivity.this, "Cuenta registrada con correo: " + registroEmail, Toast.LENGTH_SHORT).show();
+
+                            // Crear nuevo usuario con email y contraseña
+                            Map<String, Object> usuario = new HashMap<>();
+                            usuario.put("correo", registroEmail);
+
+                            // Añadir documento a una coleccion con ID
+                            db.collection("usuarios")
+                                    .add(usuario)
+                                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                        @Override
+                                        public void onSuccess(DocumentReference documentReference) {
+                                            Log.d("REGISTER SUCCESS", "Documento añadido con ID: " + documentReference.getId());
+                                            Toast.makeText(RegistroActivity.this, "Cuenta registrada con correo: " + registroEmail, Toast.LENGTH_SHORT).show();
+                                            finish();
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.d("REGISTER FAILED", "Error al añadir documento", e);
+                                        }
+                                    });
                             finish();
                         } else {
                             // Si el registro falla, muestra un mensaje
@@ -75,14 +106,5 @@ public class RegistroActivity extends AppCompatActivity {
                         }
                     }
                 });
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
-            Toast.makeText(this, "Usuario no autorizado, complete el formulario", Toast.LENGTH_SHORT).show();
-        }
     }
 }
