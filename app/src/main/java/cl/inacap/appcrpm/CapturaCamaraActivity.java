@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.bluetooth.BluetoothSocket;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -46,12 +47,14 @@ public class CapturaCamaraActivity extends AppCompatActivity implements CameraBr
 
     private CameraBridgeViewBase cameraBridgeViewBase;
     private Mat frame, processedFrame;  // Declarar Mat globales
-
     private long lastFrameTime = 0;
-
     private static final int FRAME_INTERVAL_MS = 100;
+    private long lastTimestamp = 0;
 
-    private TextView textViewCommand;
+    private TextView textViewCommandDedosLevantados, textViewCommandDedoPulgar, textViewCommandDedoIndice,
+                    textViewCommandDedoMedio, textViewCommandDedoAnular, textViewCommandDedoMenique;
+
+    private String ultimoComandoEnviado = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +63,11 @@ public class CapturaCamaraActivity extends AppCompatActivity implements CameraBr
 
         ActivityCompat.requestPermissions(CapturaCamaraActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
 
-        textViewCommand = findViewById(R.id.command);
+        textViewCommandDedoPulgar = findViewById(R.id.commandDedoPulgar);
+        textViewCommandDedoIndice = findViewById(R.id.commandDedoIndice);
+        textViewCommandDedoMedio = findViewById(R.id.commandDedoMedio);
+        textViewCommandDedoAnular = findViewById(R.id.commandDedoAnular);
+        textViewCommandDedoMenique = findViewById(R.id.commandDedoMenique);
 
         // Inicializar el CameraBridgeViewBase
         cameraBridgeViewBase = (CameraBridgeViewBase) findViewById(R.id.camera_preview);
@@ -225,7 +232,12 @@ public class CapturaCamaraActivity extends AppCompatActivity implements CameraBr
             @Override
             public void run() {
                 try {
-                    URL url = new URL("http://192.168.4.27:5000/process_frame");
+                    long currentTimestamp = System.currentTimeMillis();
+
+                    if (currentTimestamp <= lastTimestamp) {
+                        currentTimestamp = lastTimestamp + 1;
+                    }
+                    URL url = new URL("http://100.101.50.111:5000/process_frame");
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                     conn.setRequestMethod("POST");
                     conn.setRequestProperty("Content-Type", "application/json");
@@ -235,6 +247,7 @@ public class CapturaCamaraActivity extends AppCompatActivity implements CameraBr
 
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("frame", encodedFrame);
+                    jsonObject.put("timestamp", currentTimestamp);
                     String jsonInputString = jsonObject.toString();
                     Log.d("ENCODED_FRAME_SIZE", String.valueOf(encodedFrame.length()));
 
@@ -273,19 +286,36 @@ public class CapturaCamaraActivity extends AppCompatActivity implements CameraBr
 
                     // Convertir respuesta a JSON
                     JSONObject jsonResponse = new JSONObject(response.toString());
-                    String command = jsonResponse.getString("finger_count");
+                    //String command = jsonResponse.getString("finger_count");
+                    String commandPulgar = jsonResponse.getString("pulgar");
+                    String commandIndice = jsonResponse.getString("indice");
+                    String commandMedio = jsonResponse.getString("medio");
+                    String commandAnular = jsonResponse.getString("anular");
+                    String commandMenique = jsonResponse.getString("menique");
 
                     // Mostrar el número de dedos levantados en la UI (hilo principal)
+                    /*
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            textViewCommand.setText("Dedos levantados: " + command);
-                            Toast.makeText(CapturaCamaraActivity.this, "Dedos levantados: " + command, Toast.LENGTH_SHORT).show();
+                            textViewCommandDedoPulgar.setText("Dedo Pulgar: " + commandPulgar);
+                            textViewCommandDedoIndice.setText("Dedo Indice: " + commandIndice);
+                            textViewCommandDedoMedio.setText("Dedo Medio: " + commandMedio);
+                            textViewCommandDedoAnular.setText("Dedo Anular: " + commandAnular);
+                            textViewCommandDedoMenique.setText("Dedo Meñique: " + commandMenique);
+
+                            //textViewCommandDedosLevantados.setText("Dedos levantados: " + command);
+                            //Toast.makeText(CapturaCamaraActivity.this, "Dedos levantados: " + command, Toast.LENGTH_SHORT).show();
                         }
                     });
+                    */
 
-                    // Enviar comando a ESP32
-                    enviarComandoESP32(command);
+                    // Último comando enviado para verificar cambios
+                    String ultimoComandoEnviado = "";
+
+                    // Ejecutar la funcion con el json recibido del servidor
+                    actualizarComandosDeDedo(jsonResponse);
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -293,25 +323,57 @@ public class CapturaCamaraActivity extends AppCompatActivity implements CameraBr
         }).start();
     }
 
-    private void enviarComandoESP32(String command) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+    private void actualizarComandosDeDedo(JSONObject respuestaServidor) {
+        try {
+            int pulgar = respuestaServidor.getInt("pulgar");
+            int indice = respuestaServidor.getInt("indice");
+            int medio = respuestaServidor.getInt("medio");
+            int anular = respuestaServidor.getInt("anular");
+            int menique = respuestaServidor.getInt("menique");
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    textViewCommandDedoPulgar.setText("Pulgar: " + (pulgar == 1 ? "Arriba" : "Abajo"));
+                    textViewCommandDedoIndice.setText("Índice: " + (indice == 1 ? "Arriba" : "Abajo"));
+                    textViewCommandDedoMedio.setText("Medio: " + (medio == 1 ? "Arriba" : "Abajo"));
+                    textViewCommandDedoAnular.setText("Anular: " + (anular == 1 ? "Arriba" : "Abajo"));
+                    textViewCommandDedoMenique.setText("Meñique: " + (menique == 1 ? "Arriba" : "Abajo"));
+                }
+            });
+
+            // Construir el comando a enviar basado en los estados de los dedos
+            String comando = "$" + pulgar + indice + medio + anular + menique;
+
+            // Enviar el comando si es diferente del último comando enviado
+            if (!comando.equals(ultimoComandoEnviado)) {
+                enviarComandoAlEsp32(comando);
+            }
+
+        } catch (Exception e) {
+            Log.e("ACTUALIZAR_DEDO_ERROR", "Error al actualizar comandos de dedos: " + e.getMessage());
+        }
+    }
+
+    private void enviarComandoAlEsp32(String comando) {
+        BluetoothSocket socket = ConexionActivity.getConnectedSocket();
+        if (comando != null) {
+            if (socket != null && socket.isConnected()) {
                 try {
-                    // Dirección IP y puerto del ESP32
-                    Socket socket = new Socket("192.168.4.1", 80); // Cambiar IP y puerto de ESP32
-
-                    // Enviar comando al ESP32
-                    OutputStream out = socket.getOutputStream();
-                    out.write(command.getBytes());
-                    out.flush();
-
-                    // Cerrar la conexión
-                    socket.close();
+                    OutputStream outputStream = socket.getOutputStream();
+                    outputStream.write(comando.getBytes());
+                    outputStream.flush();
+                    ultimoComandoEnviado = comando;
+                    Toast.makeText(this, "Comando enviado: " + comando, Toast.LENGTH_SHORT).show();
                 } catch (IOException e) {
                     e.printStackTrace();
+                    Toast.makeText(this, "Error al enviar el comando", Toast.LENGTH_SHORT).show();
                 }
+            } else {
+                Toast.makeText(this, "No hay conexión con el ESP32", Toast.LENGTH_SHORT).show();
             }
-        }).start();
+        } else {
+            Log.d("COMANDO", "Comando vacío");
+        }
     }
 }

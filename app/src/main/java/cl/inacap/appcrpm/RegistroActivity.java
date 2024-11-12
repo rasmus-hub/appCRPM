@@ -27,14 +27,12 @@ import java.util.Map;
 public class RegistroActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
-
     private FirebaseFirestore db;
 
     private Button buttonRegistroCuenta;
 
-    private EditText editTextRegistroEmail, editTextRegistroPassword;
-
-    private String registroEmail, registroPassword;
+    private EditText editTextRegistroEmail, editTextRegistroNombre, editTextRegistroApellido,
+            editTextRegistroPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,14 +42,18 @@ public class RegistroActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         editTextRegistroEmail = findViewById(R.id.registro_email);
+        editTextRegistroNombre = findViewById(R.id.registro_nombre);
+        editTextRegistroApellido = findViewById(R.id.registro_apellido);
         editTextRegistroPassword = findViewById(R.id.registro_password);
         buttonRegistroCuenta = findViewById(R.id.btn_registroCuenta);
 
         buttonRegistroCuenta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                registroEmail = String.valueOf(editTextRegistroEmail.getText().toString());
-                registroPassword = String.valueOf(editTextRegistroPassword.getText().toString());
+                String registroEmail = editTextRegistroEmail.getText().toString();
+                String registroNombre = editTextRegistroNombre.getText().toString();
+                String registroApellido = editTextRegistroApellido.getText().toString();
+                String registroPassword = editTextRegistroPassword.getText().toString();
 
                 if (TextUtils.isEmpty(registroEmail)) {
                     Toast.makeText(RegistroActivity.this, "Por favor, ingrese un correo", Toast.LENGTH_SHORT).show();
@@ -63,12 +65,12 @@ public class RegistroActivity extends AppCompatActivity {
                     return;
                 }
 
-                createAccount(registroEmail, registroPassword);
+                createAccount(registroEmail, registroNombre, registroApellido, registroPassword);
             }
         });
     }
 
-    private void createAccount(String registroEmail, String registroPassword) {
+    private void createAccount(String registroEmail, String registroNombre, String registroApellido, String registroPassword) {
         mAuth.createUserWithEmailAndPassword(registroEmail, registroPassword)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -77,17 +79,24 @@ public class RegistroActivity extends AppCompatActivity {
                             // Si el registro es correcto, se muestra la UI con la información del usuario
                             Log.d("CREACION CORREO", "createUserWithEmail:success");
 
-                            // Crear nuevo usuario con email y contraseña
+                            FirebaseUser user = mAuth.getCurrentUser();
+
+                            // Obtener id del usuario
+                            String userId = user.getUid();
+
+                            // Crear un mapa con el nuevo usuario con nombre email y contraseña
                             Map<String, Object> usuario = new HashMap<>();
                             usuario.put("correo", registroEmail);
+                            usuario.put("nombre", registroNombre + " " + registroApellido);
+                            usuario.put("tipo", "cliente");
 
                             // Añadir documento a una coleccion con ID
-                            db.collection("usuarios")
-                                    .add(usuario)
-                                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                            db.collection("usuarios").document(userId)
+                                    .set(usuario)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
-                                        public void onSuccess(DocumentReference documentReference) {
-                                            Log.d("REGISTER SUCCESS", "Documento añadido con ID: " + documentReference.getId());
+                                        public void onSuccess(Void aVoid) {
+                                            Log.d("REGISTER SUCCESS", "Documento añadido con ID: " + userId);
                                             Toast.makeText(RegistroActivity.this, "Cuenta registrada con correo: " + registroEmail, Toast.LENGTH_SHORT).show();
                                             finish();
                                         }

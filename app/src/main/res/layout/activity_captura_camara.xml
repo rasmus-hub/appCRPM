@@ -14,13 +14,67 @@
         android:visibility="visible"/>
 
     <TextView
-        android:id="@+id/command"
-        android:layout_width="match_parent"
+        android:id="@+id/commandDedoPulgar"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Mano no detectada"
+        android:layout_margin="40dp"
+        android:text="Dedo Pulgar: "
         android:textAlignment="center"
         android:textColor="@color/white"
-        android:textSize="30sp"/>
+        android:textSize="15sp"/>
+
+    <TextView
+        android:id="@+id/commandDedoIndice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/commandDedoPulgar"
+        android:layout_margin="40dp"
+        android:text="Dedo Indice: "
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="15sp"/>
+
+    <TextView
+        android:id="@+id/commandDedoMedio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/commandDedoPulgar"
+        android:layout_marginStart="40dp"
+        android:text="Dedo Medio: "
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="15sp"/>
+
+    <TextView
+        android:id="@+id/commandDedoAnular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/commandDedoPulgar"
+        android:layout_below="@id/commandDedoPulgar"
+        android:layout_marginStart="40dp"
+        android:text="Dedo Anular: "
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="15sp"/>
+
+    <TextView
+        android:id="@+id/commandDedoMenique"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/commandDedoMedio"
+        android:layout_margin="40dp"
+        android:text="Dedo Anular: "
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="15sp"/>
+
+    <ImageButton
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="0dp"
+        android:src="@drawable/ic_settings"
+        android:backgroundTint="@color/black"/>
 
 </RelativeLayout>

@@ -8,14 +8,6 @@
     android:gravity="center"
     android:background="#000000">
 
-    <ImageView
-        android:id="@+id/hand_control_image"
-        android:layout_width="411dp"
-        android:layout_height="278dp"
-        android:layout_marginBottom="30dp"
-        android:scaleType="centerCrop"
-        android:src="@mipmap/logo" />
-
     <TextView
         android:id="@+id/tv_main_title"
         android:layout_width="wrap_content"
@@ -47,6 +39,28 @@
         android:textColorHint="#A9A9A9"
         android:layout_marginBottom="15dp"
         android:inputType="textEmailAddress"/>
+
+    <EditText
+        android:id="@+id/registro_nombre"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nombre"
+        android:padding="15dp"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#A9A9A9"
+        android:layout_marginBottom="15dp"
+        android:inputType="textPersonName"/>
+
+    <EditText
+        android:id="@+id/registro_apellido"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Apellido"
+        android:padding="15dp"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#A9A9A9"
+        android:layout_marginBottom="15dp"
+        android:inputType="textPersonName"/>
 
     <EditText
         android:id="@+id/registro_password"

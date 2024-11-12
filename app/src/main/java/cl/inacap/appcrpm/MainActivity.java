@@ -13,10 +13,14 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private String loginEmail, loginPassword;
 
     private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+
         buttonInicioSesion = findViewById(R.id.btn_login);
         buttonRegistro = findViewById(R.id.btn_registro);
         editTextLoginEmail = findViewById(R.id.loginEmail);
@@ -75,14 +82,47 @@ public class MainActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("LOGIN", "signInWithEmail:success");
-                            startActivity(new Intent(MainActivity.this, MenuInicioActivity.class));
+
                             FirebaseUser user = mAuth.getCurrentUser();
+
+                            userVerify(user);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w("LOGIN", "signInWithEmail:failure", task.getException());
                             Toast.makeText(MainActivity.this, "Autenticacion fallida",
                                     Toast.LENGTH_SHORT).show();
                         }
+                    }
+                });
+    }
+
+    private void userVerify(FirebaseUser user) {
+        String userId = user.getUid();
+
+        db.collection("usuarios").document(userId)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            String tipo = documentSnapshot.getString("tipo");
+
+                            if (tipo.equals("admin")) {
+                                startActivity(new Intent(MainActivity.this, MenuInicioAdminActivity.class));
+                            } else if (tipo.equals("cliente")) {
+                                startActivity(new Intent(MainActivity.this, MenuInicioActivity.class));
+                            } else {
+                                Toast.makeText(MainActivity.this, "Tipo de usuario no reconocido.", Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            Log.w("DOCUMENT", "El documento del usuario no existe.");
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("DOCUMENT", "Error al obtener documento del usuario.");
                     }
                 });
     }
